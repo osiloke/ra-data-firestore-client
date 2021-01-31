@@ -120,7 +120,7 @@ const save = async (
       uploadResult ? Object.assign(data, uploadResult) : false
     );
   }
-
+  
   if (isNew) {
     Object.assign(data, {
       [timestampFieldNames.createdAt]: new Date().getTime()
@@ -232,13 +232,14 @@ let ixPages = {};
 
 const getList = async (params, resourceName, tag) => {
   //  handles get list requests from dataProvider in uduX admin-portal
+  // console.log("GET_LIST from ra-data-firestore-json", params, resourceName, tag);
   if (params.pagination) {
     const perPage = 100;
     const { page } = params.pagination;
     let values = [];
     // TODO: use timestampFieldNames property to get created field
     let pageField = "created";
-    const order = "desc";
+        const order = "desc";
     const IXName = `${resourceName}${tag || ""}${params.filter ? Object.keys(params.filter).join() + Object.values(params.filter) : ""}`;
     if (IXName !== lastIXName) {
       firstPageIX = {}
@@ -252,9 +253,12 @@ const getList = async (params, resourceName, tag) => {
     const last = lastPageIX[IXName];
     const lastPage = paginationPage[IXName] || 1;
 
+
+
     let fb = firebase.firestore().collection(resourceName);
 
     if (params.filter) {
+      
       const fields = Object.keys(params.filter);
       for (let i = 0; i < fields.length; i++) {
         // eslint-disable-next-line prettier/prettier
@@ -297,6 +301,11 @@ const getList = async (params, resourceName, tag) => {
       // }
       const _start = 0;
       const _end = values.length;
+
+    if (params.sort) {
+      values.sort(sortBy(`${params.sort.order === 'ASC' ? '' : '-'}${params.sort.field}`));
+    }
+    
       const keys = values.map(i => i.id);
       const data = values ? values.slice(_start, _end) : [];
       const ids = keys.slice(_start, _end) || [];

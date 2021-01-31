@@ -1,3 +1,4 @@
+/* eslint-disable no-unmodified-loop-condition */
 /* eslint-disable prettier/prettier */
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -85,8 +86,9 @@ const RestProvider = (firebaseConfig = {}, options = {}, others={}) => {
     switch (type) {
       case GET_LIST:
         // //console.log('GET_LIST');
-        //console.log('from ra-data-firestore-json ', type, resourceName, params);
+        console.log('GET_LIST from ra-data-firestore-json', type, resourceName, params);
         result = await getList(params, resourceName, resourcesData[resourceName]);
+        console.log("GET_LIST from ra-data-firestore-json RESULTS ",resourceName, result);
         return result;
       case GET_MANY:
         result = await getMany(params, resourceName, resourcesData[resourceName]);
@@ -110,12 +112,12 @@ const RestProvider = (firebaseConfig = {}, options = {}, others={}) => {
         return result;
 
       case DELETE_MANY:
-        // //console.log('DELETE_MANY');
+        console.log("GOT TO DELETE MANEY", type, resourceName, params);
         result = await delMany(params.ids, resourceName, resourcesData[resourceName]);
         return result;
       case UPDATE:
       case CREATE:
-        //console.log('I HAVE BEEN SENT A FILE', type, resourceName, params);
+        console.log('I HAVE BEEN SENT A FILE', type, resourceName, params);
         let itemId = getItemID(params, type, resourceName, resourcesPaths[resourceName], {});
         // //console.log('CHECKS FOR THE ITEMS PASSED TO UPLOAD FUNCTION ', params.data, itemId, resourceName, resourcesPaths[resourceName]);
         const uploads = resourcesUploadFields[resourceName]
